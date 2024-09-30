@@ -2,16 +2,87 @@ import express from 'express';
 // index.js  
 import api from './api.js';
 import polygen from './polygen.js';
+import axios from 'axios';
+import cors from 'cors';
 const app = express();
 const PORT = process.env.PORT || 3000;
-
+app.use(cors());
 // 设置根路由  
 app.get('/', (req, res) => {
-  res.send('Hello, Express!');
+  const token = req.headers['authorization']?.split(' ')[1];
+  res.send('Hel1222是山山水水 lo,2 Express!' + token);
 });
-app.get('/rodin', (req, res) => {
-  api.rodin();
-  res.send('Hello, rodin!');
+app.get('/status', async (req, res) => {
+  try {
+    const response = await api.status();
+    res.send(response);
+  } catch (error) {
+    console.error('Error details:', error); // 打印完整的错误信息
+    res.status(error.response ? error.response.status : 500).send({
+      message: 'Internal Server Error',
+      details: error.response ? error.response.data : error.message,
+    });
+  }
+})
+
+app.get('/test', async (req, res) => {
+  try {
+    const prompt = 'A robot that can walk and talk';
+    const response = await axios.post('http://api/v1/ai-rodin', { prompt }, {
+      headers: req.headers,
+    });
+    res.status(response.status).send(response3.data);
+  } catch (error) {
+    console.error('Error details:', error); // 打印完整的错误信息
+    res.status(error.response ? error.response.status : 500).send({
+      message: 'Internal Server Error',
+      details: error.response ? error.response.data : error.message,
+    });
+  }
+});
+
+
+app.get('/prompt', async (req, res) => {
+  const { prompt } = req.query
+  if (!prompt) {
+    res.status(400).send('prompt is required');
+    return;
+  }
+  if (prompt.length < 4) {
+    res.status(400).send('prompt is too short');
+    return
+  }
+  try {
+    const response = await axios.post('http://api/v1/ai-rodin', { prompt }, {
+      headers: req.headers,
+    });
+    const response2 = await api.prompt(prompt);
+    const response3 = await axios.put('http://api/v1/ai-rodin/' + response.data.id, { status: response2.data }, {
+      headers: req.headers,
+    });
+    res.status(response.status).send(response3.data);
+  } catch (error) {
+    console.error('Error details:', error); // 打印完整的错误信息
+    res.status(error.response ? error.response.status : 500).send({
+      message: 'Internal Server Error',
+      details: error.response ? error.response.data : error.message,
+    });
+  }
+});
+
+app.get('/v1/ai-rodin', async (req, res) => {
+  try {
+    const response = await axios.get('https://api/v1/ai-rodin', {
+      headers: req.headers,
+    });
+    res.status(response.status).send(response.data);
+  } catch (error) {
+    console.error('Error details:', error); // 打印完整的错误信息
+    res.status(error.response ? error.response.status : 500).send({
+      message: 'Internal Server Error',
+      details: error.response ? error.response.data : error.message,
+    });
+  }
 });
 app.get('/status', (req, res) => {
   api.status();

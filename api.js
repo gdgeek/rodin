@@ -42,10 +42,10 @@ axios.post('https://hyperhuman.deemos.com/api/v2/rodin', form, {
 export const print = () => {
   console.log('Hello from Rodin!');
 };
-export const status = () => {
+export const status = async (key) => {
 
   const data = JSON.stringify({
-    "subscription_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0eXBlIjoxLCJqb2JJZHMiOlsiNTAyMTBmMWQtOTFhOS00MmIxLTlhNWQtZmU3ZGYyNjJjYTA5IiwiN2UyOTY2NGUtMzgxZC00YTc3LWE0ODAtYzg4NWNjYTcyMjkxIiwiZTAxZTQ3MDctMDAyNC00NThmLWFiMjMtYjZmYTA0ZjAwZWJlIiwiNTg2ODE4YjgtNDFhMi00ZjM4LWI4ZmUtZDdiZDk1YzRjOWJmIiwiZGRkNjJlZmMtZWMwOS00OGFiLWJjMDItMzhlNzFiYzRlOGY2Il0sImlhdCI6MTcyNzQzODU3Nn0.iWOYkAiqtd9Zqchv4BZDXK_T59L3-F_EOePgZGeHzu4"
+    "subscription_key": key
   });
 
   const config = {
@@ -59,39 +59,28 @@ export const status = () => {
     data: data
   };
 
-  axios.request(config)
-    .then((response) => {
-      console.log(JSON.stringify(response.data));
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-
+  const response = await axios.request(config);
+  return response;
 };
-export const rodin = () => {
+export const prompt = async (prompt) => {
   const form = new FormData();
-  form.append('prompt', "cool robot");
+  form.append('prompt', prompt);
   // form.append('images', fs.createReadStream(imagePath));
-  console.log('Hello from Rodin!');
-  axios.post('https://hyperhuman.deemos.com/api/v2/rodin', form, {
+  //console.log('Hello from Rodin!');
+  const response = await axios.post('https://hyperhuman.deemos.com/api/v2/rodin', form, {
     headers: {
       ...form.getHeaders(),
       'Authorization': `Bearer ${RODIN_API_KEY}`,
     },
-  })
-    .then(response => {
-      console.log('Response:', response.data);
-    })
-    .catch(error => {
-      console.error('Error:', error.response ? error.response.data : error.message);
-    });
+  });
+  return response;
 };
 // module1.js  
 export const greeting = () => {
   return "Hello from Module 1!";
 };
 export default {
-  rodin,
+  prompt,
   status,
   print,
 }

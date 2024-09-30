@@ -1,0 +1,11 @@
+# 使用 Node.js 官方镜像  
+FROM node  
+
+# 设置工作目录  
+WORKDIR /usr/src/app  
+
+RUN npm install -g nodemon
+# 暴露应用运行的端口  
+EXPOSE 3000  
+# 启动应用  
+CMD ["nodemon", "index.js"]
