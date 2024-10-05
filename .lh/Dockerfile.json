@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 7,
+            "activePatchIndex": 8,
             "patches": [
                 {
                     "date": 1727421620382,
@@ -36,6 +36,10 @@
                 {
                     "date": 1727424758612,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,6 @@\n # 使用 Node.js 官方镜像  \n-FROM node:latest\n+FROM node:14  \n \n # 设置工作目录  \n WORKDIR /usr/src/app  \n \n@@ -16,5 +16,5 @@\n # 暴露应用运行的端口  \n EXPOSE 3000  \n \n # 启动应用  \n-CMD [\"npm\", \"start\"] \n\\ No newline at end of file\n+CMD [\"npm\", \"start\"]  \n\\ No newline at end of file\n"
+                },
+                {
+                    "date": 1728145436620,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -1,6 +1,6 @@\n # 使用 Node.js 官方镜像  \n-FROM node  \n+FROM node:22-alpine  \n \n # 设置工作目录  \n WORKDIR /usr/src/app  \n \n"
                 }
             ],
             "date": 1727421620382,
