@@ -1,4 +1,5 @@
 import express from 'express';
+import configure from './configure.js';
 // index.js  
 import api from './api.js';
 import polygen from './polygen.js';
@@ -23,14 +24,14 @@ app.get('/file', async (req, res) => {
     return;
   }
   try {
-    const response = await axios.get('http://api/v1/ai-rodin/' + id, {
+    const response = await axios.get('http://' + configure.apiUrl + '/v1/ai-rodin/' + id, {
       headers: req.headers,
     });
     const data = response.data.download;
     const glbFile = data.list.find(item => item.name.endsWith('.glb'));
 
     if (!glbFile) {
-      await axios.put('http://api/v1/ai-rodin/' + id, { download: null }, {
+      await axios.put('http://' + configure.apiUrl + '/v1/ai-rodin/' + id, { download: null }, {
         headers: req.headers,
       });
       throw new Error('No file with .glb extension found');
@@ -63,7 +64,7 @@ app.get('/file', async (req, res) => {
             throw new Error(err.message);
           } else {
             try {
-              const response3 = await axios.post('http://api/v1/ai-rodin/file?id=' + id, {
+              const response3 = await axios.post('http://' + configure.apiUrl + '/v1/ai-rodin/file?id=' + id, {
                 filename: response.data.generation.prompt + ".glb",
                 url: "https://" + data.Location,
                 md5: md5Hash,
@@ -104,7 +105,7 @@ app.get('/download', async (req, res) => {
     return;
   }
   try {
-    const response = await axios.get('http://api/v1/ai-rodin/' + id, {
+    const response = await axios.get('http://' + configure.apiUrl + '/v1/ai-rodin/' + id, {
       headers: req.headers,
     });
 
@@ -115,7 +116,7 @@ app.get('/download', async (req, res) => {
       return;
     }
     const response2 = await api.download(generation.uuid);
-    const response3 = await axios.put('http://api/v1/ai-rodin/' + id, { download: response2.data }, {
+    const response3 = await axios.put('http://' + configure.apiUrl + '/v1/ai-rodin/' + id, { download: response2.data }, {
       headers: req.headers,
     });
     res.status(response3.status).send(response3.data);
@@ -135,7 +136,7 @@ app.get('/check', async (req, res) => {
     return;
   }
   try {
-    const response = await axios.get('http://api/v1/ai-rodin/' + id, {
+    const response = await axios.get('http://' + configure.apiUrl + '/v1/ai-rodin/' + id, {
       headers: req.headers,
     });
 
@@ -147,7 +148,7 @@ app.get('/check', async (req, res) => {
     }
     const response2 = await api.check(generation.jobs.subscription_key);
 
-    const response3 = await axios.put('http://api/v1/ai-rodin/' + id, { check: response2.data }, {
+    const response3 = await axios.put('http://' + configure.apiUrl + '/v1/ai-rodin/' + id, { check: response2.data }, {
       headers: req.headers,
     });
     res.status(response.status).send(response3.data);
@@ -162,7 +163,7 @@ app.get('/check', async (req, res) => {
 })
 
 const getResource = async (resource_id, req) => {
-  const response = await axios.get('http://api/v1/resources/' + resource_id, {
+  const response = await axios.get('http://' + configure.apiUrl + '/v1/resources/' + resource_id, {
     headers: req.headers,
   });
 
@@ -186,7 +187,7 @@ app.get('/rodin', async (req, res) => {
 
   try {
     if (id) {
-      const response = await axios.get('http://api/v1/ai-rodin/' + id, {
+      const response = await axios.get('http://' + configure.apiUrl + '/v1/ai-rodin/' + id, {
         headers: req.headers,
       });
       resource_id = response.data.query?.resource_id
@@ -202,7 +203,7 @@ app.get('/rodin', async (req, res) => {
         res.status(400).send('prompt or resource_id is required');
         return;
       }
-      const response = await axios.post('http://api/v1/ai-rodin', { query: req.query, name: prompt }, {
+      const response = await axios.post('http://' + configure.apiUrl + '/v1/ai-rodin', { query: req.query, name: prompt }, {
         headers: req.headers,
       });
       id = response.data.id;
@@ -220,7 +221,7 @@ app.get('/rodin', async (req, res) => {
       }
     }
     const response2 = await api.rodin(images, prompt);
-    const response3 = await axios.put('http://api/v1/ai-rodin/' + id, { generation: response2.data, name: response2.data.prompt }, {
+    const response3 = await axios.put('http://' + configure.apiUrl + '/v1/ai-rodin/' + id, { generation: response2.data, name: response2.data.prompt }, {
       headers: req.headers,
     });
     res.status(response3.status).send(response3.data);

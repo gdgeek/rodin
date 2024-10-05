@@ -2,6 +2,7 @@
 import getenv from 'getenv';
 
 export default {
+  apiUrl: getenv.string('API_URL'),
   rodin: {
     apiKey: getenv.string('RODIN_API_KEY'),
   },
