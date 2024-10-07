@@ -183,7 +183,7 @@ const getResource = async (resource_id, req) => {
   return { data: response2.data, meta: meta };
 }
 app.get('/rodin', async (req, res) => {
-  let { resource_id, prompt, id } = req.query
+  let { resource_id, prompt, id, quality } = req.query
 
   try {
     if (id) {
@@ -220,7 +220,7 @@ app.get('/rodin', async (req, res) => {
         images.push(data)
       }
     }
-    const response2 = await api.rodin(images, prompt);
+    const response2 = await api.rodin(images, prompt, quality);
     const response3 = await axios.put('http://' + configure.apiUrl + '/v1/ai-rodin/' + id, { generation: response2.data, name: response2.data.prompt }, {
       headers: req.headers,
     });

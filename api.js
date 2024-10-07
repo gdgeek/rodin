@@ -48,7 +48,7 @@ const check = async (key) => {
 
   return await axios.request(config);
 };
-const rodin = async (images, prompt) => {
+const rodin = async (images, prompt, quality) => {
   const data = new FormData();
   if ((!images || images.length == 0) && !prompt) {
     throw new Error('Images and prompt are required');
@@ -56,6 +56,9 @@ const rodin = async (images, prompt) => {
   images.forEach((image) => {
     data.append('images', (new PassThrough()).end(image.data), image.meta);
   });
+  if (quality) {
+    data.append('quality', quality);
+  }
 
   if (prompt) {
     data.append('prompt', prompt);
