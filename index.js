@@ -64,7 +64,7 @@ app.get('/file', async (req, res) => {
             throw new Error(err.message);
           } else {
             try {
-              const response3 = await axios.post('http://' + configure.apiUrl + '/v1/ai-rodin/file?id=' + id, {
+              const response3 = await axios.put('http://' + configure.apiUrl + '/v1/ai-rodin/file?id=' + id, {
                 filename: response.data.generation.prompt + ".glb",
                 url: "https://" + data.Location,
                 md5: md5Hash,
